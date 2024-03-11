@@ -8,7 +8,7 @@ module IF_Stage_Reg
 );
 
 
-  always @(rst, posedge clk) begin
+  always @(posedge rst, posedge clk) begin
     if (rst) begin
       PC <= 32'b0;
       Instruction <= 32'b0;

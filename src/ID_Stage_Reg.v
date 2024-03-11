@@ -7,7 +7,7 @@ module ID_Stage_Reg
     output reg [31:0] PC
 );
 
-always @(rst, posedge clk) begin
+always @(posedge rst, posedge clk) begin
   if (rst)
     PC <= 32'b0;
   else
