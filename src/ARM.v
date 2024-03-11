@@ -302,5 +302,72 @@ input          TD_CLK27;            //	TV Decoder 27MHz CLK
 inout	[35:0]	GPIO_0;					//	GPIO Connection 0
 inout	[35:0]	GPIO_1;					//	GPIO Connection 1
 
+wire clk, rst;
+assign clk = CLOCK_50;
+assign rst = SW[0];
+
+
+// Instruction Fetch
+wire branch_taken, freeze, flush;
+wire [31:0] BranchAddr, IF_PC, IF_Instruction;
+
+assign flush = 0;
+assign freeze = 0;
+assign branch_taken = 0;
+
+IF_Stage IF_S(
+ .clk(clk),
+ .rst(rst),
+ .branch_taken(branch_taken),
+ .freeze(freeze), 
+ .BranchAddr(BranchAddr), 
+ .PC(IF_PC), 
+ .Instruction(IF_Instruction)
+ );
+ 
+// Instruction Fetch Register
+wire [31:0] ID_PC, ID_Instruction;
+ 
+IF_Stage_Reg IF_S_REG(
+ .clk(clk),
+ .rst(rst),
+ .freeze(freeze),
+ .flush(flush),
+ .PC_in(IF_PC), 
+ .Instruction_in(IF_Instruction),
+ .PC(ID_PC), 
+ .Instruction(ID_Instruction)
+ );
+ 
+// Instruction Decode Register
+wire [31:0] EXE_PC;
+
+ID_Stage_Reg ID_S_REG(
+  .clk(clk), 
+  .rst(rst),
+  .PC_in(ID_PC),
+  .PC(EXE_PC)
+);
+
+// Execution Register
+wire [31:0] MEM_PC;
+
+EXE_Stage_Reg EXE_S_REG(
+  .clk(clk), 
+  .rst(rst),
+  .PC_in(EXE_PC),
+  .PC(MEM_PC)
+);
+
+// Execution Register
+wire [31:0] WB_PC;
+
+MEM_Stage_Reg MEM_S_REG(
+  .clk(clk), 
+  .rst(rst),
+  .PC_in(MEM_PC),
+  .PC(WB_PC)
+);
+
 	
 endmodule

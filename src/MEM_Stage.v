@@ -1,4 +1,4 @@
-`timescale 1nd/1ns
+`timescale 1ns/1ns
 
 module MEM_Stage 
 (
